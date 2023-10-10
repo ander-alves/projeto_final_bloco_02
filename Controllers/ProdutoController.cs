@@ -9,54 +9,58 @@ namespace projeto_final_bloco_02.Controllers
     [ApiController]
     public class ProdutoController : ControllerBase
     {
+
         private readonly IProdutoService _produtoService;
         private readonly IValidator<Produto> _produtoValidator;
 
-        public ProdutoController(IProdutoService produtoService, IValidator<Produto> produtoValidator)
+        public ProdutoController(
+            IProdutoService produtoService,
+            IValidator<Produto> produtoValidator
+            )
         {
             _produtoService = produtoService;
             _produtoValidator = produtoValidator;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Produto>>> GetAll()
+        public async Task<ActionResult> GetAll()
         {
             return Ok(await _produtoService.GetAll());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Produto>> GetById(long id)
+        public async Task<ActionResult> GetById(long id)
         {
-            var response = await _produtoService.GetById(id);
+            var Resposta = await _produtoService.GetById(id);
 
-            if (response == null)
+            if (Resposta is null)
             {
-                return NotFound();
+                return NotFound("Produto não encontrado!");
             }
-            return Ok(response);
+
+            return Ok(Resposta);
         }
 
         [HttpGet("nome/{nome}")]
-        public async Task<ActionResult<Produto>> GetByTitle(string nome)
+        public async Task<ActionResult> GetByName(string nome)
         {
             return Ok(await _produtoService.GetByName(nome));
         }
 
+        
+
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] Produto produto)
         {
-            var validationResult = await _produtoValidator.ValidateAsync(produto);
+            var validarProduto = await _produtoValidator.ValidateAsync(produto);
 
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult);
-            }
+            if (!validarProduto.IsValid)
+                return StatusCode(StatusCodes.Status400BadRequest, validarProduto);
 
-            var response = await _produtoService.Create(produto);
-            if (response is null)
-            {
-                return BadRequest("Produto não encontrado");
-            }
+            var Resposta = await _produtoService.Create(produto);
+
+            if (Resposta is null)
+                return BadRequest("Categoria não encontrada!");
 
             return CreatedAtAction(nameof(GetById), new { id = produto.Id }, produto);
         }
@@ -65,34 +69,34 @@ namespace projeto_final_bloco_02.Controllers
         public async Task<ActionResult> Update([FromBody] Produto produto)
         {
             if (produto.Id == 0)
-                return BadRequest("ID do Produto Invavalido");
+                return BadRequest("Id da Produto é inválido!");
 
             var validarProduto = await _produtoValidator.ValidateAsync(produto);
 
             if (!validarProduto.IsValid)
                 return StatusCode(StatusCodes.Status400BadRequest, validarProduto);
 
-            var resposta = await _produtoService.Update(produto);
+            var Resposta = await _produtoService.Update(produto);
 
-            if (resposta is null)
-                return NotFound("Produto ou Categoria nao encontrados");
+            if (Resposta is null)
+                return NotFound("Produto e/ou Categoria não encontrados!");
 
-            return Ok(resposta);
+            return Ok(Resposta);
 
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var product = await _produtoService.GetById(id);
-            if (product is null)
-            {
-                return NotFound("Produto não encontrado");
-            }
+            var BuscaProduto = await _produtoService.GetById(id);
 
-            await _produtoService.Delete(product);
+            if (BuscaProduto is null)
+                return NotFound("Produto não encontrado!");
+
+            await _produtoService.Delete(BuscaProduto);
 
             return NoContent();
+
         }
 
     }

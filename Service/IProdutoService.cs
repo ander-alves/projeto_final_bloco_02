@@ -8,7 +8,7 @@ namespace projeto_final_bloco_02.Service
         Task<Produto> GetById(long id);
         Task<IEnumerable<Produto>> GetByName(string nome);
         Task<Produto?> Create(Produto produto);
-        Task<Produto> Update(Produto produto);
+        Task<Produto?> Update(Produto produto);
         Task Delete(Produto produto);
     }
 }

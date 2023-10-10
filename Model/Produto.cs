@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace projeto_final_bloco_02.Model
 {
     public class Produto
     {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
@@ -23,6 +25,6 @@ namespace projeto_final_bloco_02.Model
         [Column(TypeName = "varchar")]
         [StringLength(5000)]
         public string Foto { get; set; } = string.Empty;
-
+        public virtual Categoria? Categoria { get; set; }
     }
 }

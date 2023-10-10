@@ -1,5 +1,5 @@
-﻿using FluentValidation;
-using projeto_final_bloco_02.Model;
+﻿using projeto_final_bloco_02.Model;
+using FluentValidation;
 
 namespace projeto_final_bloco_02.Validator
 {
@@ -17,7 +17,7 @@ namespace projeto_final_bloco_02.Validator
             RuleFor(p => p.Preco)
                 .NotNull()
                 .GreaterThan(0)
-                .PrecisionScale(20, 2, false); ;
+                .PrecisionScale(20, 2, false);;
         }
     }
 }
